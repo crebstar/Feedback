@@ -1,0 +1,241 @@
+﻿Build started 8/28/2014 1:22:21 AM.
+     1>Project "C:\Users\AW 18\Dropbox\GuildHall\Projects\CBEngine\CBEngine.vcxproj" on node 2 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\CBEngine.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W4 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\\" /Fd"C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt EngineCode\AABB3D.cpp EngineCode\Alarm.cpp EngineCode\AsyncJob.cpp EngineCode\BitmapFont.cpp EngineCode\CB3DSMaxImporter.cpp EngineCode\CBMemoryManager.cpp EngineCode\CBMesh.cpp EngineCode\CBNode.cpp EngineCode\CBRenderer.cpp EngineCode\CBSkinnedMesh.cpp EngineCode\CBSkinnedTriangleBatch.cpp EngineCode\CBStringHelper.cpp EngineCode\CBTriangleBatch.cpp EngineCode\Clock.cpp EngineCode\CollisionHelper.cpp EngineCode\CommandLet.cpp EngineCode\CommandLineArgs.cpp EngineCode\CommandPrompt.cpp EngineCode\Console.cpp EngineCode\ConsoleCommandArg.cpp EngineCode\DebugAABB.cpp EngineCode\DebugArrow.cpp EngineCode\DebugLine.cpp EngineCode\DebugPoint.cpp EngineCode\DebugShapeDefinition.cpp EngineCode\DebugShapeRenderer.cpp EngineCode\DebugSphere.cpp EngineCode\Disk2D.cpp EngineCode\EngineErrorManager.cpp EngineCode\EngineProfiler.cpp EngineCode\EngineSettings.cpp EngineCode\Entity.cpp EngineCode\EntityMesh.cpp EngineCode\EventSubscriberBase.cpp EngineCode\EventSystem.cpp EngineCode\EventSystemSubscriber.cpp EngineCode\FMODSound.cpp EngineCode\Fog.cpp EngineCode\FontManager.cpp EngineCode\FrameBufferObject.cpp EngineCode\GameDirector.cpp EngineCode\Geometry3D.cpp EngineCode\Glyph.cpp EngineCode\guicon.cpp EngineCode\HashBufferJob.cpp EngineCode\InputHandler.cpp EngineCode\JobManager.cpp EngineCode\Light.cpp EngineCode\LoadFileJob.cpp EngineCode\Material.cpp EngineCode\Matrix44.cpp EngineCode\MatrixStack.cpp EngineCode\MemoryMacros.cpp EngineCode\NamedProperties.cpp EngineCode\NamedProperty.cpp EngineCode\Node.cpp EngineCode\OpenGLRenderer.cpp EngineCode\OpenGLShader.cpp EngineCode\OpenGLShaderError.cpp EngineCode\OpenGLShaderManager.cpp EngineCode\OpenGLShaderProgram.cpp EngineCode\OperatorNewDelete.cpp EngineCode\Particle.cpp EngineCode\Plane3D.cpp EngineCode\ProfileSection.cpp EngineCode\pugixml.cpp EngineCode\ReverseBufferJob.cpp EngineCode\SaveFileJob.cpp EngineCode\Size.cpp EngineCode\Sphere3D.cpp EngineCode\SphereShape.cpp EngineCode\Sprite.cpp EngineCode\SpriteAnimation.cpp EngineCode\SpriteAnimationDefinition.cpp EngineCode\TextRenderer.cpp EngineCode\Texture.cpp EngineCode\TextureAtlas.cpp EngineCode\TextureAtlasManager.cpp EngineCode\TextureManager.cpp EngineCode\TimeSystem.cpp EngineCode\TimeUtil.cpp EngineCode\TypedEventSubscriber.cpp EngineCode\TypedNamedProperty.cpp EngineCode\Vector2.cpp EngineCode\ViewFrustum.cpp EngineCode\WorkerThread.cpp EngineCode\XBOXController.cpp EngineCode\XMLDocument.cpp EngineCode\XMLNode.cpp EngineCode\XMLParser.cpp
+         XMLParser.cpp
+         XMLNode.cpp
+         XMLDocument.cpp
+     1>c:\users\aw 18\dropbox\guildhall\projects\cbengine\enginecode\xmldocument.cpp(92): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(234) : see declaration of 'fopen'
+         XBOXController.cpp
+         WorkerThread.cpp
+         ViewFrustum.cpp
+         Vector2.cpp
+         TypedNamedProperty.cpp
+         TypedEventSubscriber.cpp
+         TimeUtil.cpp
+         TimeSystem.cpp
+         TextureManager.cpp
+         TextureAtlasManager.cpp
+         TextureAtlas.cpp
+         Texture.cpp
+         TextRenderer.cpp
+         SpriteAnimationDefinition.cpp
+         SpriteAnimation.cpp
+         Sprite.cpp
+         SphereShape.cpp
+         Generating Code...
+         Compiling...
+         Sphere3D.cpp
+         Size.cpp
+         SaveFileJob.cpp
+     1>c:\users\aw 18\dropbox\guildhall\projects\cbengine\enginecode\savefilejob.cpp(25): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(234) : see declaration of 'fopen'
+         ReverseBufferJob.cpp
+         pugixml.cpp
+         ProfileSection.cpp
+         Plane3D.cpp
+         Particle.cpp
+         OperatorNewDelete.cpp
+         OpenGLShaderProgram.cpp
+         OpenGLShaderManager.cpp
+         OpenGLShaderError.cpp
+         OpenGLShader.cpp
+         OpenGLRenderer.cpp
+         Node.cpp
+         NamedProperty.cpp
+         NamedProperties.cpp
+         MemoryMacros.cpp
+         MatrixStack.cpp
+         Matrix44.cpp
+         Generating Code...
+     1>c:\users\aw 18\dropbox\guildhall\projects\cbengine\enginecode\openglshadererror.cpp(110): warning C4701: potentially uninitialized local variable 'returningCharPosition' used
+         Compiling...
+         Material.cpp
+         LoadFileJob.cpp
+     1>c:\users\aw 18\dropbox\guildhall\projects\cbengine\enginecode\loadfilejob.cpp(24): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(234) : see declaration of 'fopen'
+         Light.cpp
+         JobManager.cpp
+         InputHandler.cpp
+         HashBufferJob.cpp
+         guicon.cpp
+         Glyph.cpp
+         Geometry3D.cpp
+         GameDirector.cpp
+     1>c:\users\aw 18\dropbox\guildhall\projects\cbengine\enginecode\gamedirector.cpp(158): warning C4189: 'sharedJobManager' : local variable is initialized but not referenced
+     1>c:\users\aw 18\dropbox\guildhall\projects\cbengine\enginecode\gamedirector.cpp(348): warning C4244: 'argument' : conversion from 'time_t' to 'unsigned int', possible loss of data
+     1>c:\users\aw 18\dropbox\guildhall\projects\cbengine\enginecode\gamedirector.cpp(366): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(234) : see declaration of 'fopen'
+         FrameBufferObject.cpp
+         FontManager.cpp
+         Fog.cpp
+         FMODSound.cpp
+     1>c:\users\aw 18\dropbox\guildhall\projects\cbengine\enginecode\fmodsound.cpp(16): warning C4101: 'numDrivers' : unreferenced local variable
+     1>c:\users\aw 18\dropbox\guildhall\projects\cbengine\enginecode\fmodsound.cpp(19): warning C4101: 'name' : unreferenced local variable
+     1>c:\users\aw 18\dropbox\guildhall\projects\cbengine\enginecode\fmod_errors.h(19): warning C4505: 'FMOD_ErrorString' : unreferenced local function has been removed
+         EventSystemSubscriber.cpp
+         EventSystem.cpp
+         EventSubscriberBase.cpp
+         EntityMesh.cpp
+         Entity.cpp
+         EngineSettings.cpp
+         Generating Code...
+     1>c:\users\aw 18\dropbox\guildhall\projects\cbengine\enginecode\jobmanager.cpp(104): warning C4715: 'JobManager::addAsyncJobToWorkerThreadQueue' : not all control paths return a value
+         Compiling...
+         EngineProfiler.cpp
+         EngineErrorManager.cpp
+         Disk2D.cpp
+         DebugSphere.cpp
+         DebugShapeRenderer.cpp
+         DebugShapeDefinition.cpp
+         DebugPoint.cpp
+         DebugLine.cpp
+         DebugArrow.cpp
+         DebugAABB.cpp
+         ConsoleCommandArg.cpp
+         Console.cpp
+         CommandPrompt.cpp
+         CommandLineArgs.cpp
+         CommandLet.cpp
+         CollisionHelper.cpp
+         Clock.cpp
+         CBTriangleBatch.cpp
+         CBStringHelper.cpp
+         CBSkinnedTriangleBatch.cpp
+         Generating Code...
+         Compiling...
+         CBSkinnedMesh.cpp
+         CBRenderer.cpp
+         CBNode.cpp
+         CBMesh.cpp
+         CBMemoryManager.cpp
+     1>c:\users\aw 18\dropbox\guildhall\projects\cbengine\enginecode\cbmemorymanager.cpp(116): warning C4100: 'lineNum' : unreferenced formal parameter
+     1>c:\users\aw 18\dropbox\guildhall\projects\cbengine\enginecode\cbmemorymanager.cpp(116): warning C4100: 'fileName' : unreferenced formal parameter
+     1>c:\users\aw 18\dropbox\guildhall\projects\cbengine\enginecode\cbmemorymanager.cpp(119): warning C4189: 'totalSizeOfBlockToFree' : local variable is initialized but not referenced
+     1>c:\users\aw 18\dropbox\guildhall\projects\cbengine\enginecode\cbmemorymanager.cpp(231): warning C4244: '=' : conversion from '__int64' to 'size_t', possible loss of data
+     1>c:\users\aw 18\dropbox\guildhall\projects\cbengine\enginecode\cbmemorymanager.cpp(316): warning C4244: '=' : conversion from '__int64' to 'size_t', possible loss of data
+     1>c:\users\aw 18\dropbox\guildhall\projects\cbengine\enginecode\cbmemorymanager.cpp(441): warning C4996: '_itoa': This function or variable may be unsafe. Consider using _itoa_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdlib.h(451) : see declaration of '_itoa'
+     1>c:\users\aw 18\dropbox\guildhall\projects\cbengine\enginecode\cbmemorymanager.cpp(442): warning C4996: '_itoa': This function or variable may be unsafe. Consider using _itoa_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdlib.h(451) : see declaration of '_itoa'
+     1>c:\users\aw 18\dropbox\guildhall\projects\cbengine\enginecode\cbmemorymanager.cpp(459): warning C4996: '_itoa': This function or variable may be unsafe. Consider using _itoa_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdlib.h(451) : see declaration of '_itoa'
+         CB3DSMaxImporter.cpp
+         BitmapFont.cpp
+         AsyncJob.cpp
+         Alarm.cpp
+         AABB3D.cpp
+         Generating Code...
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W4 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\\" /Fd"C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\vc100.pdb" /Gd /TC /analyze- /errorReport:prompt EngineCode\stb_image.c
+         stb_image.c
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\Lib.exe /OUT:"C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\CBEngine.lib" /NOLOGO "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\AABB3D.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\Alarm.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\AsyncJob.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\BitmapFont.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\CB3DSMaxImporter.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\CBMemoryManager.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\CBMesh.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\CBNode.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\CBRenderer.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\CBSkinnedMesh.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\CBSkinnedTriangleBatch.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\CBStringHelper.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\CBTriangleBatch.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\Clock.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\CollisionHelper.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\CommandLet.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\CommandLineArgs.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\CommandPrompt.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\Console.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\ConsoleCommandArg.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\DebugAABB.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\DebugArrow.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\DebugLine.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\DebugPoint.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\DebugShapeDefinition.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\DebugShapeRenderer.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\DebugSphere.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\Disk2D.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\EngineErrorManager.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\EngineProfiler.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\EngineSettings.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\Entity.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\EntityMesh.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\EventSubscriberBase.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\EventSystem.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\EventSystemSubscriber.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\FMODSound.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\Fog.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\FontManager.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\FrameBufferObject.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\GameDirector.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\Geometry3D.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\Glyph.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\guicon.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\HashBufferJob.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\InputHandler.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\JobManager.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\Light.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\LoadFileJob.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\Material.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\Matrix44.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\MatrixStack.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\MemoryMacros.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\NamedProperties.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\NamedProperty.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\Node.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\OpenGLRenderer.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\OpenGLShader.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\OpenGLShaderError.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\OpenGLShaderManager.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\OpenGLShaderProgram.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\OperatorNewDelete.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\Particle.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\Plane3D.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\ProfileSection.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\pugixml.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\ReverseBufferJob.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\SaveFileJob.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\Size.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\Sphere3D.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\SphereShape.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\Sprite.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\SpriteAnimation.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\SpriteAnimationDefinition.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\stb_image.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\TextRenderer.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\Texture.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\TextureAtlas.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\TextureAtlasManager.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\TextureManager.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\TimeSystem.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\TimeUtil.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\TypedEventSubscriber.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\TypedNamedProperty.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\Vector2.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\ViewFrustum.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\WorkerThread.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\XBOXController.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\XMLDocument.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\XMLNode.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\XMLParser.obj"
+     1>TypedNamedProperty.obj : warning LNK4221: This object file does not define any previously undefined public symbols, so it will not be used by any link operation that consumes this library
+     1>TypedEventSubscriber.obj : warning LNK4221: This object file does not define any previously undefined public symbols, so it will not be used by any link operation that consumes this library
+     1>Sphere3D.obj : warning LNK4221: This object file does not define any previously undefined public symbols, so it will not be used by any link operation that consumes this library
+     1>Plane3D.obj : warning LNK4221: This object file does not define any previously undefined public symbols, so it will not be used by any link operation that consumes this library
+     1>OperatorNewDelete.obj : warning LNK4221: This object file does not define any previously undefined public symbols, so it will not be used by any link operation that consumes this library
+     1>Matrix44.obj : warning LNK4221: This object file does not define any previously undefined public symbols, so it will not be used by any link operation that consumes this library
+     1>AABB3D.obj : warning LNK4221: This object file does not define any previously undefined public symbols, so it will not be used by any link operation that consumes this library
+         CBEngine.vcxproj -> C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\CBEngine.lib
+       FinalizeBuildStatus:
+         Deleting file "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\CBEngine.unsuccessfulbuild".
+         Touching "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_CBEngine\CBEngine.lastbuildstate".
+     1>Done Building Project "C:\Users\AW 18\Dropbox\GuildHall\Projects\CBEngine\CBEngine.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:53.18

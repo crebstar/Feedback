@@ -1,0 +1,32 @@
+﻿Build started 8/28/2014 1:27:59 AM.
+     1>Project "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\Feedback.vcxproj" on node 2 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_Feedback\Feedback.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W4 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_Feedback\\" /Fd"C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_Feedback\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt WinMain.cpp
+         WinMain.cpp
+     1>c:\users\aw 18\dropbox\guildhall\projects\feedback\feedback\winmain.cpp(14): warning C4100: 'applicationInstanceHandle' : unreferenced formal parameter
+     1>c:\users\aw 18\dropbox\guildhall\projects\feedback\feedback\winmain.cpp(20): warning C4189: 'engineStartStatus' : local variable is initialized but not referenced
+     1>c:\users\aw 18\dropbox\guildhall\projects\feedback\feedback\winmain.cpp(19): warning C4189: 'sharedDirector' : local variable is initialized but not referenced
+       ManifestResourceCompile:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\rc.exe /nologo /fo"C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_Feedback\Feedback.exe.embed.manifest.res" "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_Feedback\Feedback_manifest.rc" 
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Feedback.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_Feedback\Feedback.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Feedback.lib" /MACHINE:X86 "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_Feedback\Feedback.exe.embed.manifest.res"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_Feedback\WinMain.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\CBEngine.lib"
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /out:"C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_Feedback\Feedback.exe.embed.manifest" /manifest "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_Feedback\Feedback.exe.intermediate.manifest"
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\rc.exe /nologo /fo"C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_Feedback\Feedback.exe.embed.manifest.res" "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_Feedback\Feedback_manifest.rc" 
+       LinkEmbedManifest:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Feedback.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_Feedback\Feedback.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Feedback.lib" /MACHINE:X86 "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_Feedback\Feedback.exe.embed.manifest.res"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_Feedback\WinMain.obj"
+         "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\CBEngine.lib"
+         Feedback.vcxproj -> C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Feedback.exe
+       FinalizeBuildStatus:
+         Deleting file "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_Feedback\Feedback.unsuccessfulbuild".
+         Touching "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\..\Temporary\Debug_Feedback\Feedback.lastbuildstate".
+     1>Done Building Project "C:\Users\AW 18\Dropbox\GuildHall\Projects\Feedback\Feedback\Feedback.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:01.54
