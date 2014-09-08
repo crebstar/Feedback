@@ -19,6 +19,8 @@ GameObject::GameObject() {
 
 	m_position.x = 100.0f;
 	m_position.y = 100.0f;
+	m_orientationDegrees = 0.0f;
+	m_isFlag = false;
 }
 
 
@@ -33,8 +35,10 @@ void GameObject::updatePhysics( float deltaSeconds ) {
 	m_currentVelocity.x = m_currentVelocity.x * MAX_VELOCITY_PER_SECOND;
 	m_currentVelocity.y = m_currentVelocity.y * MAX_VELOCITY_PER_SECOND;
 
-	m_position.x = m_position.x + ( m_currentVelocity.x * deltaSeconds );
-	m_position.y = m_position.y + ( m_currentVelocity.y * deltaSeconds );
+	//m_position.x = m_position.x + ( m_currentVelocity.x * deltaSeconds );
+	//m_position.y = m_position.y + ( m_currentVelocity.y * deltaSeconds );
+
+	m_desiredPosition = m_position;
 
 	m_currentVelocity.x = 0.0f;
 	m_currentVelocity.y = 0.0f;
@@ -49,8 +53,6 @@ void GameObject::updateDesiredPosition( float deltaSeconds ) {
 	m_desiredPosition.x = m_desiredPosition.x + ( m_currentVelocity.x * deltaSeconds );
 	m_desiredPosition.y = m_desiredPosition.y + ( m_currentVelocity.y * deltaSeconds );
 
-	m_currentVelocity.x = 0.0f;
-	m_currentVelocity.y = 0.0f;
 }
 
 
@@ -65,7 +67,7 @@ void GameObject::render( float deltaSeconds ) const {
 	MatrixStack* matrixStack = MatrixStack::sharedMatrixStack();
 	cbengine::Vector3<float> translationToPosition( m_position.x, m_position.y, 0.0f );
 	matrixStack->applyTranslationAndPushToStack( translationToPosition );
-	float orientationRadians = cbengine::degreesToRadians( 0.0f );
+	float orientationRadians = cbengine::degreesToRadians( m_orientationDegrees );
 	matrixStack->applyRotationAboutZAndPushToStack( orientationRadians );
 	const Matrix44<float> & topOfStack = matrixStack->getMatrixFromTopOfStack();
 	glLoadMatrixf( topOfStack.matrixData );
@@ -74,17 +76,17 @@ void GameObject::render( float deltaSeconds ) const {
 
 	glColor3f( m_playerColor.x, m_playerColor.y, m_playerColor.z );
 
-	const float testSize = 25.0f;
+	const float halfWidth = m_objectSize.m_width;
 
 	glBegin( GL_QUADS ); {
 
-		glVertex2f( -m_objectSize.m_width, -m_objectSize.m_height );
+		glVertex2f( -halfWidth, -m_objectSize.m_height );
 
-		glVertex2f( m_objectSize.m_width, -m_objectSize.m_height );
+		glVertex2f( halfWidth, -m_objectSize.m_height );
 
-		glVertex2f( m_objectSize.m_width, m_objectSize.m_height );
+		glVertex2f( halfWidth, m_objectSize.m_height );
 
-		glVertex2f( -m_objectSize.m_width, m_objectSize.m_height );
+		glVertex2f( -halfWidth, m_objectSize.m_height );
 
 	} glEnd();
 

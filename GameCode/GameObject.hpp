@@ -32,6 +32,7 @@ public:
 
 	cbengine::Size				m_objectSize;
 	int							m_playerID;
+	bool						m_isFlag;
 
 protected:
 

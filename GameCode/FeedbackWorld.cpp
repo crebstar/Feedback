@@ -15,6 +15,7 @@
 #include "../../CBEngine/EngineCode/MatrixStack.hpp"
 #include "../../CBEngine/EngineCode/Matrix44.hpp"
 #include "../../CBEngine/EngineCode/Geometry3D.hpp"
+#include "../../CBEngine/EngineCode/TimeUtil.hpp"
 
 
 #include "GameConstants.hpp"
@@ -39,7 +40,6 @@ void FeedbackWorld::freeMemoryOfOwnedObjectsAndCleanUp() {
 FeedbackWorld::FeedbackWorld() {
 
 	setDefaultVariableValues();
-
 }
 
 
@@ -48,16 +48,70 @@ void FeedbackWorld::update( float deltaSeconds ) {
 
 	processKeyboardInput( deltaSeconds );
 	computePlayerDesiredPosition( deltaSeconds );
-	sendPlayerDesiredPosition( deltaSeconds );
 
-	getUpdatedGameDataFromNetworkAgent();
+	if ( m_gameState == GAME_STATE_RUNNING ) {
 
-	m_player.update( deltaSeconds );
+		sendPlayerDesiredPosition( deltaSeconds );
 
-	for ( int i = 0; i < m_otherPlayers.size(); ++i ) {
+		getUpdatedGameDataFromNetworkAgent();
 
-		GameObject* otherPlayer = m_otherPlayers[i];
-		//otherPlayer->update( deltaSeconds );
+		m_player.update( deltaSeconds );
+
+		for ( int i = 0; i < m_otherPlayers.size(); ++i ) {
+
+			GameObject* otherPlayer = m_otherPlayers[i];
+		}
+
+		m_flag.update( deltaSeconds );
+
+	} else if ( m_gameState == GAME_STATE_WAITING_FOR_SERVER ) {
+
+		attemptToConnectToServer( deltaSeconds );
+
+	}
+	
+}
+
+
+void FeedbackWorld::attemptToConnectToServer( float deltaSeconds ) {
+
+	cbengine::GameDirector* sharedGameDirector = cbengine::GameDirector::sharedDirector();
+
+	FeedbackGame* fbGame = dynamic_cast<FeedbackGame*>( sharedGameDirector->getCurrentWorld() );
+
+	if ( fbGame != nullptr ) {
+
+		NetworkAgent* nwAgent = fbGame->getCurrentNetworkAgent();
+		if ( nwAgent != nullptr ) {
+
+			CS6Packet resetPacket;
+			bool resetPacketReceived = nwAgent->requestToJoinServer( deltaSeconds, resetPacket );
+			if ( resetPacketReceived ) {
+
+				// Player
+				m_player.m_playerColor.x = static_cast<float>( resetPacket.data.reset.playerColorAndID[0] );
+				m_player.m_playerColor.y = static_cast<float>( resetPacket.data.reset.playerColorAndID[1] );
+				m_player.m_playerColor.z = static_cast<float>( resetPacket.data.reset.playerColorAndID[2] );
+				m_player.m_position.x = resetPacket.data.reset.playerXPosition;
+				m_player.m_position.y = resetPacket.data.reset.playerYPosition;
+				m_player.m_desiredPosition = m_player.m_position;
+				m_player.m_currentVelocity.x = 0.0f;
+				m_player.m_currentVelocity.y = 0.0f;
+				m_player.m_orientationDegrees = 0.0f;
+				m_player.m_isFlag = false;
+
+				// Flag
+				m_flag.m_orientationDegrees = 0.0f;
+				m_flag.m_position.x = resetPacket.data.reset.flagXPosition;
+				m_flag.m_position.y = resetPacket.data.reset.flagYPosition;
+				m_flag.m_playerColor.x = 0.50f;
+				m_flag.m_playerColor.y = 0.55f;
+				m_flag.m_playerColor.z = 0.30f;
+				m_flag.m_playerColor.w = 1.0f;
+
+				m_gameState = GAME_STATE_RUNNING;
+			}
+		}
 	}
 }
 
@@ -79,10 +133,19 @@ void FeedbackWorld::sendPlayerDesiredPosition( float deltaSeconds ) {
 		NetworkAgent* nwAgent = fbGame->getCurrentNetworkAgent();
 		if ( nwAgent != nullptr ) {
 
-			PlayerDataPacket playerPacket;
-			playerPacket.m_playerID = m_player.m_playerID;
-			playerPacket.m_xPos = m_player.m_desiredPosition.x;
-			playerPacket.m_yPos = m_player.m_desiredPosition.y;
+			CS6Packet playerPacket;
+			playerPacket.packetType = TYPE_Update;
+			playerPacket.packetNumber = 0;
+			playerPacket.playerColorAndID[0] = static_cast<unsigned char>( m_player.m_playerColor.x );
+			playerPacket.playerColorAndID[1] = static_cast<unsigned char>( m_player.m_playerColor.y );
+			playerPacket.playerColorAndID[2] = static_cast<unsigned char>( m_player.m_playerColor.z );
+			playerPacket.timestamp = cbutil::getCurrentTimeSeconds();
+			playerPacket.data.updated.xPosition = m_player.m_desiredPosition.x;
+			playerPacket.data.updated.yPosition = m_player.m_desiredPosition.y;
+			playerPacket.data.updated.xVelocity = m_player.m_currentVelocity.x;
+			playerPacket.data.updated.yVelocity = m_player.m_currentVelocity.y;
+			playerPacket.data.updated.yawDegrees = m_player.m_orientationDegrees;
+
 			nwAgent->sendPlayerDataPacketToServer( playerPacket );
 		}
 	}
@@ -100,7 +163,7 @@ void FeedbackWorld::getUpdatedGameDataFromNetworkAgent() {
 		NetworkAgent* nwAgent = fbGame->getCurrentNetworkAgent();
 		if ( nwAgent != nullptr ) {
 
-			PlayerDataPacket playerPacket;
+			CS6Packet playerPacket;
 			bool packetIsAvailable = true;
 
 			while ( packetIsAvailable ) {
@@ -108,61 +171,63 @@ void FeedbackWorld::getUpdatedGameDataFromNetworkAgent() {
 				packetIsAvailable = nwAgent->getLatestGamePacketData( playerPacket );
 				if ( packetIsAvailable ) {
 
-					if ( playerPacket.m_packetID == NEW_PLAYER_ACK_ID ) {
+					if ( playerPacket.packetType == TYPE_Update ) {
 
-						m_player.m_playerColor.x = static_cast<float>( playerPacket.m_red );
-						m_player.m_playerColor.y = static_cast<float>( playerPacket.m_green );
-						m_player.m_playerColor.z = static_cast<float>( playerPacket.m_blue );
-
-						m_player.m_playerColor.x = cbengine::rangeMapFloat( 0.0f, 255.0f, 0.0f, 1.0f, m_player.m_playerColor.x );
-						m_player.m_playerColor.y = cbengine::rangeMapFloat( 0.0f, 255.0f, 0.0f, 1.0f, m_player.m_playerColor.y );
-						m_player.m_playerColor.z = cbengine::rangeMapFloat( 0.0f, 255.0f, 0.0f, 1.0f, m_player.m_playerColor.z );
-
-						m_player.m_playerColor.w = 1.0f;
-						m_player.m_position.x = playerPacket.m_xPos;
-						m_player.m_position.y = playerPacket.m_yPos;
-						m_player.m_playerID = playerPacket.m_playerID;
-
-					} else {
-
-						if ( playerPacket.m_playerID == m_player.m_playerID ) {
-
-							m_player.m_position.x = playerPacket.m_xPos;
-							m_player.m_position.y = playerPacket.m_yPos;
+						if ( playerPacket.playerColorAndID[0] == static_cast<unsigned char>( m_player.m_playerColor.x ) &&
+							playerPacket.playerColorAndID[1] == static_cast<unsigned char>( m_player.m_playerColor.y ) &&
+							playerPacket.playerColorAndID[2] == static_cast<unsigned char>( m_player.m_playerColor.z ) ) 
+						{
+							m_player.m_position.x = playerPacket.data.updated.xPosition;
+							m_player.m_position.y = playerPacket.data.updated.yPosition;
+							m_player.m_orientationDegrees = playerPacket.data.updated.yawDegrees;
+							m_player.m_currentVelocity.x = playerPacket.data.updated.xVelocity;
+							m_player.m_currentVelocity.y = playerPacket.data.updated.xVelocity;
 
 						} else {
 
-							bool playerFound = false;
+							bool playerMatchFound = false;
 							for ( int i = 0; i < m_otherPlayers.size(); ++i ) {
 
 								GameObject* otherPlayer = m_otherPlayers[i];
-								if ( playerPacket.m_playerID == otherPlayer->m_playerID ) {
+								if ( static_cast<unsigned char>( otherPlayer->m_playerColor.x ) == playerPacket.playerColorAndID[0] &&
+									static_cast<unsigned char>( otherPlayer->m_playerColor.y ) == playerPacket.playerColorAndID[1] &&
+									static_cast<unsigned char>( otherPlayer->m_playerColor.z ) == playerPacket.playerColorAndID[2] ) 
+								{
+									playerMatchFound = true;
 
-									playerFound = true;
-									otherPlayer->m_position.x = playerPacket.m_xPos;
-									otherPlayer->m_position.y = playerPacket.m_yPos;
+									otherPlayer->m_position.x = playerPacket.data.updated.xPosition;
+									otherPlayer->m_position.y = playerPacket.data.updated.yPosition;
+									otherPlayer->m_orientationDegrees = playerPacket.data.updated.yawDegrees;
+									otherPlayer->m_currentVelocity.x = playerPacket.data.updated.xVelocity;
+									otherPlayer->m_currentVelocity.y = playerPacket.data.updated.yVelocity;
 								}
 							}
 
-							if ( !playerFound ) {
+							if ( !playerMatchFound ) {
 
 								GameObject* newPlayerToAdd = new GameObject;
-								newPlayerToAdd->m_position.x = playerPacket.m_xPos;
-								newPlayerToAdd->m_position.y = playerPacket.m_yPos;
-								newPlayerToAdd->m_playerID = playerPacket.m_playerID;
-								newPlayerToAdd->m_playerColor.x = static_cast<float>( playerPacket.m_red );
-								newPlayerToAdd->m_playerColor.y = static_cast<float>( playerPacket.m_green );
-								newPlayerToAdd->m_playerColor.z = static_cast<float>( playerPacket.m_blue );
 
-								newPlayerToAdd->m_playerColor.x = cbengine::rangeMapFloat( 0.0f, 255.0f, 0.0f, 1.0f, newPlayerToAdd->m_playerColor.x );
-								newPlayerToAdd->m_playerColor.y = cbengine::rangeMapFloat( 0.0f, 255.0f, 0.0f, 1.0f, newPlayerToAdd->m_playerColor.y );
-								newPlayerToAdd->m_playerColor.z = cbengine::rangeMapFloat( 0.0f, 255.0f, 0.0f, 1.0f, newPlayerToAdd->m_playerColor.z );
-
+								newPlayerToAdd->m_playerColor.x = cbengine::rangeMapFloat( 0.0f, 255.0f, 0.0f, 1.0f, static_cast<float>( playerPacket.playerColorAndID[0] ) );
+								newPlayerToAdd->m_playerColor.y = cbengine::rangeMapFloat( 0.0f, 255.0f, 0.0f, 1.0f, static_cast<float>( playerPacket.playerColorAndID[1] ) );
+								newPlayerToAdd->m_playerColor.z = cbengine::rangeMapFloat( 0.0f, 255.0f, 0.0f, 1.0f, static_cast<float>( playerPacket.playerColorAndID[2] ) );
 								newPlayerToAdd->m_playerColor.w = 1.0f;
+								newPlayerToAdd->m_isFlag = false;
+
+
+								// Initial Position, Velocity, and Orientation
+								newPlayerToAdd->m_position.x = playerPacket.data.updated.xPosition;
+								newPlayerToAdd->m_position.y = playerPacket.data.updated.yPosition;
+								newPlayerToAdd->m_orientationDegrees = playerPacket.data.updated.yawDegrees;
+								newPlayerToAdd->m_currentVelocity.x = playerPacket.data.updated.xVelocity;
+								newPlayerToAdd->m_currentVelocity.y = playerPacket.data.updated.yVelocity;
 
 								m_otherPlayers.push_back( newPlayerToAdd );
 							}
 						}
+	
+					} else {
+
+						
 					}
 				}
 			}
@@ -184,14 +249,20 @@ void FeedbackWorld::render( float deltaSeconds ) const {
 	m_camera2D.setUpCameraPositionForRendering();
 
 	// TEST CODE
-	m_player.render( deltaSeconds );
+	if ( m_gameState == GAME_STATE_RUNNING ) {
 
-	for ( int i = 0; i < m_otherPlayers.size(); ++i ) {
+		m_player.render( deltaSeconds );
 
-		GameObject* otherPlayer = m_otherPlayers[i];
-		otherPlayer->render( deltaSeconds );
+		for ( int i = 0; i < m_otherPlayers.size(); ++i ) {
+
+			GameObject* otherPlayer = m_otherPlayers[i];
+			otherPlayer->render( deltaSeconds );
+		}
+		// END TEST CODE
+
+		m_flag.render( deltaSeconds );
 	}
-	// END TEST CODE
+	
 
 	matrixStack->emptyCurrentMatrixStackAndPushIdentityMatrix();
 }
@@ -228,4 +299,5 @@ void FeedbackWorld::setDefaultVariableValues() {
 
 	m_camera2D.m_position.x = 0.0f;
 	m_camera2D.m_position.y = 0.0f;
+	m_gameState = GAME_STATE_WAITING_FOR_SERVER;
 }

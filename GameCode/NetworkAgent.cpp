@@ -1,5 +1,7 @@
 #include "NetworkAgent.hpp"
 
+#include "../../CBEngine/EngineCode/TimeUtil.hpp"
+
 
 NetworkAgent::~NetworkAgent() {
 
@@ -114,12 +116,12 @@ void NetworkAgent::establishConnectionToNewServer( const std::string& serverIPAd
 }
 
 
-void NetworkAgent::sendPlayerDataPacketToServer( const PlayerDataPacket& playerPacket ) {
+void NetworkAgent::sendPlayerDataPacketToServer( const CS6Packet& playerPacket ) {
 
 	if ( m_connectionIsActive ) {
 
 		int wsResult = 0;
-		wsResult = sendto( m_serverSocket, (char*) &playerPacket, sizeof( PlayerDataPacket ), 0, (sockaddr*) &m_serverAddress, m_serverAddressLength ); // For UDP use sendTo
+		wsResult = sendto( m_serverSocket, (char*) &playerPacket, sizeof( CS6Packet ), 0, (sockaddr*) &m_serverAddress, m_serverAddressLength ); // For UDP use sendTo
 
 		if  (wsResult == SOCKET_ERROR ) {
 
@@ -136,7 +138,90 @@ void NetworkAgent::sendPlayerDataPacketToServer( const PlayerDataPacket& playerP
 }
 
 
-bool NetworkAgent::getLatestGamePacketData( PlayerDataPacket& out_playerPacketData ) {
+bool NetworkAgent::requestToJoinServer( float deltaSeconds, CS6Packet& out_resetPacketReceived ) {
+
+	static float durationSincePacketSent = deltaSeconds;
+	static bool bPacketToJoinSent = false;
+
+	if ( !m_connectionIsActive ) {
+
+		durationSincePacketSent = 0.0f;
+		bPacketToJoinSent = false;
+		return false;
+	}
+
+	if ( !bPacketToJoinSent ) {
+
+		CS6Packet joinPacket;
+		joinPacket.packetNumber = 0;
+		joinPacket.packetType = TYPE_Acknowledge;
+		joinPacket.timestamp = cbutil::getCurrentTimeSeconds();
+		joinPacket.playerColorAndID[0] = 0;
+		joinPacket.playerColorAndID[1] = 0;
+		joinPacket.playerColorAndID[2] = 0;
+		joinPacket.data.acknowledged.packetType = TYPE_Acknowledge;
+		joinPacket.data.acknowledged.packetNumber = 0;
+
+		int wsResult = 0;
+		wsResult = sendto( m_serverSocket, (char*) &joinPacket, sizeof( CS6Packet ), 0, (sockaddr*) &m_serverAddress, m_serverAddressLength ); 
+
+		if  (wsResult == SOCKET_ERROR ) {
+
+			printf( "sendto failed with error: %d\n", WSAGetLastError() );
+			bPacketToJoinSent = false;
+
+		} else {
+
+			bPacketToJoinSent = true;
+			durationSincePacketSent = 0.0f;
+		}
+
+	} else {
+
+		durationSincePacketSent += deltaSeconds;
+
+		int winSockResult = 0;
+		sockaddr_in serverAddress;
+		int sizeOfServeraddress = sizeof( serverAddress );
+
+		winSockResult = recvfrom( m_serverSocket, (char*) &out_resetPacketReceived, sizeof( CS6Packet ), 0, (sockaddr*) &serverAddress, &sizeOfServeraddress );
+
+		if ( winSockResult > 0 ) {
+
+			if ( out_resetPacketReceived.packetType == TYPE_Reset ) {
+
+				CS6Packet ackPacket;
+				ackPacket.packetNumber = 0;
+				ackPacket.packetType = TYPE_Acknowledge;
+				ackPacket.timestamp = cbutil::getCurrentTimeSeconds();
+				ackPacket.playerColorAndID[0] = 0;
+				ackPacket.playerColorAndID[1] = 0;
+				ackPacket.playerColorAndID[2] = 0;
+				ackPacket.data.acknowledged.packetType = TYPE_Reset;
+				ackPacket.data.acknowledged.packetNumber = out_resetPacketReceived.packetNumber;
+
+				int wsResult = 0;
+				wsResult = sendto( m_serverSocket, (char*) &ackPacket, sizeof( CS6Packet ), 0, (sockaddr*) &m_serverAddress, m_serverAddressLength ); 
+
+				return true;
+			}
+
+		} else {
+
+			if ( durationSincePacketSent > THRESHOLD_FOR_CONNECTION_RERQUEST ) {
+
+				durationSincePacketSent = 0.0f;
+				bPacketToJoinSent = false;
+			}
+
+		}
+	}
+
+	return false;
+}
+
+
+bool NetworkAgent::getLatestGamePacketData( CS6Packet& out_playerPacketData ) {
 
 	bool packetIsAvailable = false;
 

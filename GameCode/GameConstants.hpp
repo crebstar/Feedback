@@ -23,8 +23,8 @@ namespace feedback {
 	const float SCREEN_HEIGHT						= 900.0f;
 	const float SCREEN_ADJUSTMENT					= 50.0f;
 
-	const double ORTHO_SCREEN_WIDTH					= 1600.0f;
-	const double ORTHO_SCREEN_HEIGHT				= 900.0f;
+	const double ORTHO_SCREEN_WIDTH					= 500.0f;
+	const double ORTHO_SCREEN_HEIGHT				= 500.0f;
 
 	const float  CONSOLE_RESET_DUR					= 0.3f;
 

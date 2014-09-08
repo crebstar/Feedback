@@ -15,6 +15,9 @@
 #include <windows.h> // In future abstract this out to engine code and remove windows dependency
 
 #include "FeedbackWorld.hpp"
+#include "CS6Packet.hpp"
+
+const float THRESHOLD_FOR_CONNECTION_RERQUEST = 1.0f;
 
 class NetworkAgent {
 public:
@@ -28,9 +31,11 @@ public:
 	void establishConnectionToServer();
 	void establishConnectionToNewServer( const std::string& serverIPAddress, const std::string& serverPortNumber );
 
-	void sendPlayerDataPacketToServer( const PlayerDataPacket& playerPacket );
+	bool requestToJoinServer( float deltaSeconds, CS6Packet& out_resetPacketReceived );
+	void sendPlayerDataPacketToServer( const CS6Packet& playerPacket );
+	
 
-	bool getLatestGamePacketData( PlayerDataPacket& out_playerPacketData );
+	bool getLatestGamePacketData( CS6Packet& out_playerPacketData );
 
 protected:
 

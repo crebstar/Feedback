@@ -11,12 +11,21 @@
 #include "Camera.hpp"
 #include "Camera2D.hpp"
 #include "GameObject.hpp"
+#include "CS6Packet.hpp"
 
 
 const char PLAYER_DATA_PACKET_ID = 2;
 const char NEW_PLAYER_ACK_ID = 3;
 const char RELIABLE_ACK_ID	= 30;
 const int PACKET_ACK_ID_NON_RELIABLE = -1;
+
+
+typedef enum {
+
+	GAME_STATE_WAITING_FOR_SERVER,
+	GAME_STATE_RUNNING,
+
+} GameState;
 
 struct PlayerDataPacket {
 public:
@@ -66,6 +75,7 @@ protected:
 	void renderDebugAxis() const;
 
 	// Network functions
+	void attemptToConnectToServer( float deltaSeconds );
 	void computePlayerDesiredPosition( float deltaSeconds );
 	void sendPlayerDesiredPosition( float deltaSeconds );
 	void getUpdatedGameDataFromNetworkAgent();
@@ -80,7 +90,9 @@ private:
 
 	// For now
 	GameObject								m_player;
+	GameObject								m_flag;
 	std::vector<GameObject*>				m_otherPlayers;
+	GameState								m_gameState;
 };
 
 // Inline Functions
