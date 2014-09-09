@@ -19,8 +19,8 @@ namespace feedback {
 	const float PITCH_ORIENTATION_MAX				= 88.0f;
 	const float PITCH_ORIENTATION_MIN				= -88.0f;
 
-	const float SCREEN_WIDTH						= 1600.0f;
-	const float SCREEN_HEIGHT						= 900.0f;
+	const float SCREEN_WIDTH						= 500.0f;
+	const float SCREEN_HEIGHT						= 500.0f;
 	const float SCREEN_ADJUSTMENT					= 50.0f;
 
 	const double ORTHO_SCREEN_WIDTH					= 500.0f;

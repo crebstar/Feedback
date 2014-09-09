@@ -79,6 +79,7 @@ protected:
 	void computePlayerDesiredPosition( float deltaSeconds );
 	void sendPlayerDesiredPosition( float deltaSeconds );
 	void getUpdatedGameDataFromNetworkAgent();
+	void checkForCollisionsWithFlag( float deltaSeconds );
 
 	// Initialization and Clean Up
 	void setDefaultVariableValues();

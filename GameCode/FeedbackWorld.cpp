@@ -46,10 +46,10 @@ FeedbackWorld::FeedbackWorld() {
 
 void FeedbackWorld::update( float deltaSeconds ) {
 
-	processKeyboardInput( deltaSeconds );
-	computePlayerDesiredPosition( deltaSeconds );
-
 	if ( m_gameState == GAME_STATE_RUNNING ) {
+
+		processKeyboardInput( deltaSeconds );
+		computePlayerDesiredPosition( deltaSeconds );
 
 		sendPlayerDesiredPosition( deltaSeconds );
 
@@ -63,6 +63,8 @@ void FeedbackWorld::update( float deltaSeconds ) {
 		}
 
 		m_flag.update( deltaSeconds );
+
+		checkForCollisionsWithFlag( deltaSeconds );
 
 	} else if ( m_gameState == GAME_STATE_WAITING_FOR_SERVER ) {
 
@@ -92,6 +94,9 @@ void FeedbackWorld::attemptToConnectToServer( float deltaSeconds ) {
 				m_player.m_playerColor.x = static_cast<float>( resetPacket.data.reset.playerColorAndID[0] );
 				m_player.m_playerColor.y = static_cast<float>( resetPacket.data.reset.playerColorAndID[1] );
 				m_player.m_playerColor.z = static_cast<float>( resetPacket.data.reset.playerColorAndID[2] );
+				m_player.m_playerColor.x = cbengine::rangeMapFloat( 0.0f, 255.0f, 0.0f, 1.0f, m_player.m_playerColor.x );
+				m_player.m_playerColor.y = cbengine::rangeMapFloat( 0.0f, 255.0f, 0.0f, 1.0f, m_player.m_playerColor.y );
+				m_player.m_playerColor.z = cbengine::rangeMapFloat( 0.0f, 255.0f, 0.0f, 1.0f, m_player.m_playerColor.z );
 				m_player.m_position.x = resetPacket.data.reset.playerXPosition;
 				m_player.m_position.y = resetPacket.data.reset.playerYPosition;
 				m_player.m_desiredPosition = m_player.m_position;
@@ -108,8 +113,45 @@ void FeedbackWorld::attemptToConnectToServer( float deltaSeconds ) {
 				m_flag.m_playerColor.y = 0.55f;
 				m_flag.m_playerColor.z = 0.30f;
 				m_flag.m_playerColor.w = 1.0f;
+				m_flag.m_collisionDisk.origin = m_flag.m_position;
 
 				m_gameState = GAME_STATE_RUNNING;
+			}
+		}
+	}
+}
+
+
+void FeedbackWorld::checkForCollisionsWithFlag( float deltaSeconds ) {
+
+	bool playerDidCollideWithFlag = cbengine::doesDiskIntersectDiskOrTouch( m_player.m_collisionDisk, m_flag.m_collisionDisk );
+
+	if ( playerDidCollideWithFlag ) {
+
+		cbengine::GameDirector* sharedGameDirector = cbengine::GameDirector::sharedDirector();
+
+		FeedbackGame* fbGame = dynamic_cast<FeedbackGame*>( sharedGameDirector->getCurrentWorld() );
+
+		if ( fbGame != nullptr ) {
+
+			NetworkAgent* nwAgent = fbGame->getCurrentNetworkAgent();
+			if ( nwAgent != nullptr ) {
+
+				CS6Packet victoryPacket;
+				victoryPacket.packetType = TYPE_Victory;
+				victoryPacket.packetNumber = 0;
+				float unNormalizedRed = cbengine::rangeMapFloat( 0.0f, 1.0f, 0.0f, 255.0f, m_player.m_playerColor.x );
+				float unNormalizedGreen = cbengine::rangeMapFloat( 0.0f, 1.0f, 0.0f, 255.0f, m_player.m_playerColor.y );
+				float unNormalizedBlue = cbengine::rangeMapFloat( 0.0f, 1.0f, 0.0f, 255.0f, m_player.m_playerColor.z );
+				victoryPacket.playerColorAndID[0] = static_cast<unsigned char>( unNormalizedRed );
+				victoryPacket.playerColorAndID[1] = static_cast<unsigned char>( unNormalizedGreen );
+				victoryPacket.playerColorAndID[2] = static_cast<unsigned char>( unNormalizedBlue );
+				victoryPacket.timestamp = cbutil::getCurrentTimeSeconds();
+				victoryPacket.data.victorious.playerColorAndID[0] = static_cast<unsigned char>( unNormalizedRed );
+				victoryPacket.data.victorious.playerColorAndID[1] = static_cast<unsigned char>( unNormalizedGreen );
+				victoryPacket.data.victorious.playerColorAndID[2] = static_cast<unsigned char>( unNormalizedBlue );
+
+				nwAgent->sendPlayerVictoryPacket( victoryPacket );
 			}
 		}
 	}
@@ -136,9 +178,12 @@ void FeedbackWorld::sendPlayerDesiredPosition( float deltaSeconds ) {
 			CS6Packet playerPacket;
 			playerPacket.packetType = TYPE_Update;
 			playerPacket.packetNumber = 0;
-			playerPacket.playerColorAndID[0] = static_cast<unsigned char>( m_player.m_playerColor.x );
-			playerPacket.playerColorAndID[1] = static_cast<unsigned char>( m_player.m_playerColor.y );
-			playerPacket.playerColorAndID[2] = static_cast<unsigned char>( m_player.m_playerColor.z );
+			float unNormalizedRed = cbengine::rangeMapFloat( 0.0f, 1.0f, 0.0f, 255.0f, m_player.m_playerColor.x );
+			float unNormalizedGreen = cbengine::rangeMapFloat( 0.0f, 1.0f, 0.0f, 255.0f, m_player.m_playerColor.y );
+			float unNormalizedBlue = cbengine::rangeMapFloat( 0.0f, 1.0f, 0.0f, 255.0f, m_player.m_playerColor.z );
+			playerPacket.playerColorAndID[0] = static_cast<unsigned char>( unNormalizedRed );
+			playerPacket.playerColorAndID[1] = static_cast<unsigned char>( unNormalizedGreen );
+			playerPacket.playerColorAndID[2] = static_cast<unsigned char>( unNormalizedBlue );
 			playerPacket.timestamp = cbutil::getCurrentTimeSeconds();
 			playerPacket.data.updated.xPosition = m_player.m_desiredPosition.x;
 			playerPacket.data.updated.yPosition = m_player.m_desiredPosition.y;
@@ -173,15 +218,19 @@ void FeedbackWorld::getUpdatedGameDataFromNetworkAgent() {
 
 					if ( playerPacket.packetType == TYPE_Update ) {
 
-						if ( playerPacket.playerColorAndID[0] == static_cast<unsigned char>( m_player.m_playerColor.x ) &&
-							playerPacket.playerColorAndID[1] == static_cast<unsigned char>( m_player.m_playerColor.y ) &&
-							playerPacket.playerColorAndID[2] == static_cast<unsigned char>( m_player.m_playerColor.z ) ) 
+						float unNormalizedRed = cbengine::rangeMapFloat( 0.0f, 1.0f, 0.0f, 255.0f, m_player.m_playerColor.x );
+						float unNormalizedGreen = cbengine::rangeMapFloat( 0.0f, 1.0f, 0.0f, 255.0f, m_player.m_playerColor.y );
+						float unNormalizedBlue = cbengine::rangeMapFloat( 0.0f, 1.0f, 0.0f, 255.0f, m_player.m_playerColor.z );
+
+						if ( playerPacket.playerColorAndID[0] == static_cast<unsigned char>( unNormalizedRed ) &&
+							playerPacket.playerColorAndID[1] == static_cast<unsigned char>( unNormalizedGreen ) &&
+							playerPacket.playerColorAndID[2] == static_cast<unsigned char>( unNormalizedBlue ) ) 
 						{
 							m_player.m_position.x = playerPacket.data.updated.xPosition;
 							m_player.m_position.y = playerPacket.data.updated.yPosition;
 							m_player.m_orientationDegrees = playerPacket.data.updated.yawDegrees;
 							m_player.m_currentVelocity.x = playerPacket.data.updated.xVelocity;
-							m_player.m_currentVelocity.y = playerPacket.data.updated.xVelocity;
+							m_player.m_currentVelocity.y = playerPacket.data.updated.yVelocity;
 
 						} else {
 
@@ -189,9 +238,14 @@ void FeedbackWorld::getUpdatedGameDataFromNetworkAgent() {
 							for ( int i = 0; i < m_otherPlayers.size(); ++i ) {
 
 								GameObject* otherPlayer = m_otherPlayers[i];
-								if ( static_cast<unsigned char>( otherPlayer->m_playerColor.x ) == playerPacket.playerColorAndID[0] &&
-									static_cast<unsigned char>( otherPlayer->m_playerColor.y ) == playerPacket.playerColorAndID[1] &&
-									static_cast<unsigned char>( otherPlayer->m_playerColor.z ) == playerPacket.playerColorAndID[2] ) 
+
+								float unNormalizedRed = cbengine::rangeMapFloat( 0.0f, 1.0f, 0.0f, 255.0f, otherPlayer->m_playerColor.x );
+								float unNormalizedGreen = cbengine::rangeMapFloat( 0.0f, 1.0f, 0.0f, 255.0f, otherPlayer->m_playerColor.y );
+								float unNormalizedBlue = cbengine::rangeMapFloat( 0.0f, 1.0f, 0.0f, 255.0f, otherPlayer->m_playerColor.z );
+
+								if ( static_cast<unsigned char>( unNormalizedRed ) == playerPacket.playerColorAndID[0] &&
+									static_cast<unsigned char>( unNormalizedGreen ) == playerPacket.playerColorAndID[1] &&
+									static_cast<unsigned char>( unNormalizedBlue ) == playerPacket.playerColorAndID[2] ) 
 								{
 									playerMatchFound = true;
 
@@ -225,11 +279,35 @@ void FeedbackWorld::getUpdatedGameDataFromNetworkAgent() {
 							}
 						}
 	
-					} else {
-
+					} else if ( playerPacket.packetType == TYPE_Victory ) {
 						
+						CS6Packet ackPacketForVictory;
+						ackPacketForVictory.packetNumber = playerPacket.packetNumber;
+						ackPacketForVictory.timestamp = cbutil::getCurrentTimeSeconds();
+						ackPacketForVictory.packetType = TYPE_Acknowledge;
+						ackPacketForVictory.data.acknowledged.packetNumber = playerPacket.packetNumber;
+						ackPacketForVictory.data.acknowledged.packetType = TYPE_Victory;
+
+						nwAgent->sendAckPacket( ackPacketForVictory );
+						
+					} else if ( playerPacket.packetType == TYPE_Reset ) {
+
+						m_player.m_position.x = playerPacket.data.reset.playerXPosition;
+						m_player.m_position.y = playerPacket.data.reset.playerYPosition;
+						m_flag.m_position.x = playerPacket.data.reset.flagXPosition;
+						m_flag.m_position.y = playerPacket.data.reset.flagYPosition;
+
+						CS6Packet ackPacketForReset;
+						ackPacketForReset.packetNumber = playerPacket.packetNumber;
+						ackPacketForReset.timestamp = cbutil::getCurrentTimeSeconds();
+						ackPacketForReset.packetType = TYPE_Acknowledge;
+						ackPacketForReset.data.acknowledged.packetNumber = playerPacket.packetNumber;
+						ackPacketForReset.data.acknowledged.packetType = TYPE_Reset;
+
+						nwAgent->sendAckPacket( ackPacketForReset );
 					}
-				}
+
+				} // end packet is available
 			}
 		}
 	}
@@ -290,6 +368,17 @@ void FeedbackWorld::processKeyboardInput( float deltaSeconds ) {
 
 	if ( virtualKeys[ 'A' ] ) {
 		m_player.m_currentVelocity.x += -1.0f;
+	}
+
+	if ( virtualKeys[ VK_LEFT ] ) {
+
+		m_player.increaseOrientationDegrees( 3.50f );
+	}
+
+
+	if ( virtualKeys[ VK_RIGHT ] ) {
+
+		m_player.increaseOrientationDegrees( -3.50f );
 	}
 
 }

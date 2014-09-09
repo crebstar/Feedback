@@ -33,7 +33,8 @@ public:
 
 	bool requestToJoinServer( float deltaSeconds, CS6Packet& out_resetPacketReceived );
 	void sendPlayerDataPacketToServer( const CS6Packet& playerPacket );
-	
+	void sendPlayerVictoryPacket( const CS6Packet& victoryPacket );
+	void sendAckPacket( const CS6Packet& ackPacket );
 
 	bool getLatestGamePacketData( CS6Packet& out_playerPacketData );
 

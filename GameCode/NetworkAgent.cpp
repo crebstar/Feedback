@@ -123,17 +123,45 @@ void NetworkAgent::sendPlayerDataPacketToServer( const CS6Packet& playerPacket )
 		int wsResult = 0;
 		wsResult = sendto( m_serverSocket, (char*) &playerPacket, sizeof( CS6Packet ), 0, (sockaddr*) &m_serverAddress, m_serverAddressLength ); // For UDP use sendTo
 
-		if  (wsResult == SOCKET_ERROR ) {
+		if ( wsResult == SOCKET_ERROR ) {
 
 			printf( "sendto failed with error: %d\n", WSAGetLastError() );
 			//closesocket( connectSocket );
 			//WSACleanup();
 		}
 
-	} else {
+	} 
+}
 
-		// TODO:: Send Warning
-		int x = 3;
+
+void NetworkAgent::sendAckPacket( const CS6Packet& ackPacket ) {
+
+	if ( m_connectionIsActive ) {
+
+		int wsResult = 0;
+		wsResult = sendto( m_serverSocket, (char*) &ackPacket, sizeof( CS6Packet ), 0, (sockaddr*) &m_serverAddress, m_serverAddressLength ); 
+
+		if ( wsResult == SOCKET_ERROR ) {
+
+			printf( "sendto failed with error: %d\n", WSAGetLastError() );
+			//closesocket( connectSocket );
+			//WSACleanup();
+		}
+
+	} 
+}
+
+
+void NetworkAgent::sendPlayerVictoryPacket( const CS6Packet& victoryPacket ) {
+
+	if ( m_connectionIsActive ) {
+
+		int wsResult = 0;
+		wsResult = sendto( m_serverSocket, (char*) &victoryPacket, sizeof( CS6Packet ), 0, (sockaddr*) &m_serverAddress, m_serverAddressLength );
+		if ( wsResult == SOCKET_ERROR ) {
+
+			printf( "sendto failed with error: %d\n", WSAGetLastError() );
+		}
 	}
 }
 

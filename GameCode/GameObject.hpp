@@ -7,10 +7,12 @@
 #include "../../CBEngine/EngineCode/Vector2.hpp"
 #include "../../CBEngine/EngineCode/Vector4.hpp"
 #include "../../CBEngine/EngineCode/Size.hpp"
+#include "../../CBEngine/EngineCode/Disk2D.hpp"
 
 // GetHostByName()
 
 const float MAX_VELOCITY_PER_SECOND = 100.0f; 
+const float COLLISION_DISK_RADIUS = 5.0f;
 
 class GameObject {
 public:
@@ -25,6 +27,7 @@ public:
 	cbengine::Vector2			m_position;
 	cbengine::Vector2			m_currentVelocity;
 	float						m_orientationDegrees;
+	cbengine::Disk2D			m_collisionDisk;
 
 	// Networking related
 	cbengine::Vector2			m_desiredPosition;
@@ -33,6 +36,8 @@ public:
 	cbengine::Size				m_objectSize;
 	int							m_playerID;
 	bool						m_isFlag;
+
+	void increaseOrientationDegrees( float amountToIncrease );
 
 protected:
 

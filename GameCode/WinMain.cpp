@@ -34,8 +34,8 @@ int WINAPI WinMain( HINSTANCE applicationInstanceHandle, HINSTANCE, LPSTR comman
 
 		sharedDirector->createOpenGLWindow( applicationInstanceHandle, 
 			"Feedback", 
-			1600.0f, 
-			900.0f );
+			feedback::SCREEN_WIDTH, 
+			feedback::SCREEN_HEIGHT );
 
 		gameWorld->initializeGame();
 
