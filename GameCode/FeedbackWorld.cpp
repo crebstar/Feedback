@@ -338,7 +338,7 @@ void FeedbackWorld::render( float deltaSeconds ) const {
 		}
 		// END TEST CODE
 
-		m_flag.render( deltaSeconds );
+		//m_flag.render( deltaSeconds );
 	}
 	
 
@@ -374,7 +374,8 @@ void FeedbackWorld::processKeyboardInput( float deltaSeconds ) {
 
 		m_player.increaseOrientationDegrees( 3.50f );
 	}
-
+	//129.119.228.95
+	//129.119.246.128
 
 	if ( virtualKeys[ VK_RIGHT ] ) {
 

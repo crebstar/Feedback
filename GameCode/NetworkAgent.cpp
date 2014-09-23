@@ -188,7 +188,7 @@ bool NetworkAgent::requestToJoinServer( float deltaSeconds, CS6Packet& out_reset
 		joinPacket.playerColorAndID[1] = 0;
 		joinPacket.playerColorAndID[2] = 0;
 		joinPacket.data.acknowledged.packetType = TYPE_Acknowledge;
-		joinPacket.data.acknowledged.packetNumber = 0;
+		joinPacket.data.acknowledged.packetNumber = 20; // for testing
 
 		int wsResult = 0;
 		wsResult = sendto( m_serverSocket, (char*) &joinPacket, sizeof( CS6Packet ), 0, (sockaddr*) &m_serverAddress, m_serverAddressLength ); 
@@ -241,7 +241,7 @@ bool NetworkAgent::requestToJoinServer( float deltaSeconds, CS6Packet& out_reset
 				durationSincePacketSent = 0.0f;
 				bPacketToJoinSent = false;
 			}
-
+			// 129.119.247.169
 		}
 	}
 
