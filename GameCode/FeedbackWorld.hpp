@@ -24,8 +24,10 @@ typedef enum {
 
 	GAME_STATE_WAITING_FOR_SERVER,
 	GAME_STATE_RUNNING,
+	GAME_STATE_IN_LOBBY,
 
 } GameState;
+
 
 struct PlayerDataPacket {
 public:
@@ -80,6 +82,10 @@ protected:
 	void sendPlayerDesiredPosition( float deltaSeconds );
 	void getUpdatedGameDataFromNetworkAgent();
 	void checkForCollisionsWithFlag( float deltaSeconds );
+	void getLobbyDataFromNetworkAgent( float deltaSeconds );
+
+	void joinGame( unsigned int gameNumTojoin );
+	void createGame();
 
 	// Initialization and Clean Up
 	void setDefaultVariableValues();
@@ -94,6 +100,8 @@ private:
 	GameObject								m_flag;
 	std::vector<GameObject*>				m_otherPlayers;
 	GameState								m_gameState;
+
+	unsigned int							m_numGamesFromLobby;
 };
 
 // Inline Functions

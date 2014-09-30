@@ -291,15 +291,6 @@ void FeedbackGame::processKeyboardInput( float deltaSeconds ) {
 		xKeyDown = false;
 	}
 
-	static bool cKeyDown = false;
-	if ( keyboardVirtualKeyStatus[ 'C' ] ) {
-		if ( !cKeyDown ) {
-		
-		}
-		cKeyDown = true;
-	} else {
-		cKeyDown = false;
-	}
 
 	static bool vKeyDown = false;
 	if ( keyboardVirtualKeyStatus[ 'V' ] ) {

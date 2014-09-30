@@ -4,6 +4,7 @@
 #include <windows.h>
 #include <gl/gl.h> // ugh get rid of this dependency for rendering debug axis
 #include <string>
+#include <set>
 
 #include "../../CBEngine/EngineCode/GameDirector.hpp"
 #include "../../CBEngine/EngineCode/InputHandler.hpp" 
@@ -16,6 +17,12 @@
 #include "../../CBEngine/EngineCode/Matrix44.hpp"
 #include "../../CBEngine/EngineCode/Geometry3D.hpp"
 #include "../../CBEngine/EngineCode/TimeUtil.hpp"
+
+#include "../../CBEngine/EngineCode/Console.hpp"
+#include "../../CBEngine/EngineCode/TextRenderer.hpp"
+#include "../../CBEngine/EngineCode/FontManager.hpp"
+#include "../../CBEngine/EngineCode/BitmapFont.hpp"
+#include "../../CBEngine/EngineCode/CBStringHelper.hpp"
 
 
 #include "GameConstants.hpp"
@@ -49,6 +56,7 @@ void FeedbackWorld::update( float deltaSeconds ) {
 	if ( m_gameState == GAME_STATE_RUNNING ) {
 
 		processKeyboardInput( deltaSeconds );
+
 		computePlayerDesiredPosition( deltaSeconds );
 
 		sendPlayerDesiredPosition( deltaSeconds );
@@ -70,8 +78,87 @@ void FeedbackWorld::update( float deltaSeconds ) {
 
 		attemptToConnectToServer( deltaSeconds );
 
+	} else if ( m_gameState == GAME_STATE_IN_LOBBY ) {
+
+		processKeyboardInput( deltaSeconds );
+
+		getLobbyDataFromNetworkAgent( deltaSeconds );
 	}
 	
+}
+
+
+void FeedbackWorld::getLobbyDataFromNetworkAgent( float deltaSeconds ) {
+
+	cbengine::GameDirector* sharedGameDirector = cbengine::GameDirector::sharedDirector();
+
+	FeedbackGame* fbGame = dynamic_cast<FeedbackGame*>( sharedGameDirector->getCurrentWorld() );
+
+	if ( fbGame != nullptr ) {
+
+		NetworkAgent* nwAgent = fbGame->getCurrentNetworkAgent();
+		if ( nwAgent != nullptr ) {
+
+			std::set<CS6Packet> lobbyPackets;
+			std::set<CS6Packet> resetPackets;
+			nwAgent->getLobbyPacketsInOrder( lobbyPackets, resetPackets );
+
+			std::set<CS6Packet>::iterator itLob;
+
+			if ( !lobbyPackets.empty() ) {
+
+				itLob = lobbyPackets.begin();
+				if ( itLob != lobbyPackets.end() ) 
+				{
+					const CS6Packet& lobbyList = *(itLob);
+					m_numGamesFromLobby = lobbyList.data.gameList.totalNumGames;
+
+				} else {
+
+					m_numGamesFromLobby = 0;
+				}
+
+			} else {
+
+				m_numGamesFromLobby = 0;
+			}
+
+			if ( !resetPackets.empty() ) {
+
+				std::set<CS6Packet>::iterator itRes = resetPackets.begin();
+
+				const CS6Packet& resetPacket = *(itRes);
+
+				m_player.m_playerColor.x = static_cast<float>( resetPacket.data.reset.playerColorAndID[0] );
+				m_player.m_playerColor.y = static_cast<float>( resetPacket.data.reset.playerColorAndID[1] );
+				m_player.m_playerColor.z = static_cast<float>( resetPacket.data.reset.playerColorAndID[2] );
+				m_player.m_playerColor.x = cbengine::rangeMapFloat( 0.0f, 255.0f, 0.0f, 1.0f, m_player.m_playerColor.x );
+				m_player.m_playerColor.y = cbengine::rangeMapFloat( 0.0f, 255.0f, 0.0f, 1.0f, m_player.m_playerColor.y );
+				m_player.m_playerColor.z = cbengine::rangeMapFloat( 0.0f, 255.0f, 0.0f, 1.0f, m_player.m_playerColor.z );
+
+				m_player.m_position.x = resetPacket.data.reset.playerXPosition;
+				m_player.m_position.y = resetPacket.data.reset.playerYPosition;
+				m_player.m_currentVelocity.x = 0.0f;
+				m_player.m_currentVelocity.y = 0.0f;
+				m_player.m_orientationDegrees = 0.0f;
+				m_player.m_isFlag = false;
+
+				m_flag.m_isFlag = true;
+				m_flag.m_playerColor.x = 0.45f;
+				m_flag.m_playerColor.y = 0.45f;
+				m_flag.m_playerColor.z = 0.45f;
+
+				m_flag.m_position.x = resetPacket.data.reset.flagXPosition;
+				m_flag.m_position.y = resetPacket.data.reset.flagYPosition;
+				m_flag.m_currentVelocity.x = 0.0f;
+				m_flag.m_currentVelocity.y = 0.0f;
+				m_flag.m_orientationDegrees = 0.0f;
+
+				m_gameState = GAME_STATE_RUNNING;
+				
+			}
+		}
+	}
 }
 
 
@@ -86,36 +173,27 @@ void FeedbackWorld::attemptToConnectToServer( float deltaSeconds ) {
 		NetworkAgent* nwAgent = fbGame->getCurrentNetworkAgent();
 		if ( nwAgent != nullptr ) {
 
-			CS6Packet resetPacket;
-			bool resetPacketReceived = nwAgent->requestToJoinServer( deltaSeconds, resetPacket );
-			if ( resetPacketReceived ) {
+			CS6Packet lobbyPacket;
+			bool lobbyPacketReceived = nwAgent->requestToJoinServer( deltaSeconds, lobbyPacket );
+			if ( lobbyPacketReceived ) {
 
 				// Player
-				m_player.m_playerColor.x = static_cast<float>( resetPacket.data.reset.playerColorAndID[0] );
-				m_player.m_playerColor.y = static_cast<float>( resetPacket.data.reset.playerColorAndID[1] );
-				m_player.m_playerColor.z = static_cast<float>( resetPacket.data.reset.playerColorAndID[2] );
+				m_player.m_playerColor.x = static_cast<float>( lobbyPacket.playerColorAndID[0] );
+				m_player.m_playerColor.y = static_cast<float>( lobbyPacket.playerColorAndID[1] );
+				m_player.m_playerColor.z = static_cast<float>( lobbyPacket.playerColorAndID[2] );
 				m_player.m_playerColor.x = cbengine::rangeMapFloat( 0.0f, 255.0f, 0.0f, 1.0f, m_player.m_playerColor.x );
 				m_player.m_playerColor.y = cbengine::rangeMapFloat( 0.0f, 255.0f, 0.0f, 1.0f, m_player.m_playerColor.y );
 				m_player.m_playerColor.z = cbengine::rangeMapFloat( 0.0f, 255.0f, 0.0f, 1.0f, m_player.m_playerColor.z );
-				m_player.m_position.x = resetPacket.data.reset.playerXPosition;
-				m_player.m_position.y = resetPacket.data.reset.playerYPosition;
-				m_player.m_desiredPosition = m_player.m_position;
-				m_player.m_currentVelocity.x = 0.0f;
-				m_player.m_currentVelocity.y = 0.0f;
-				m_player.m_orientationDegrees = 0.0f;
-				m_player.m_isFlag = false;
+			
+				m_gameState = GAME_STATE_IN_LOBBY;
 
-				// Flag
-				m_flag.m_orientationDegrees = 0.0f;
-				m_flag.m_position.x = resetPacket.data.reset.flagXPosition;
-				m_flag.m_position.y = resetPacket.data.reset.flagYPosition;
-				m_flag.m_playerColor.x = 0.50f;
-				m_flag.m_playerColor.y = 0.55f;
-				m_flag.m_playerColor.z = 0.30f;
-				m_flag.m_playerColor.w = 1.0f;
-				m_flag.m_collisionDisk.origin = m_flag.m_position;
+				CS6Packet lobbyAck;
+				lobbyAck.packetType = TYPE_Acknowledge;
+				lobbyAck.packetNumber = lobbyPacket.packetNumber;
+				lobbyAck.data.acknowledged.packetType = TYPE_JoinLobby;
+				lobbyAck.data.acknowledged.packetNumber = lobbyPacket.packetNumber;
 
-				m_gameState = GAME_STATE_RUNNING;
+				nwAgent->sendAckPacket( lobbyAck );
 			}
 		}
 	}
@@ -293,9 +371,13 @@ void FeedbackWorld::getUpdatedGameDataFromNetworkAgent() {
 					} else if ( playerPacket.packetType == TYPE_Reset ) {
 
 						m_player.m_position.x = playerPacket.data.reset.playerXPosition;
-						m_player.m_position.y = playerPacket.data.reset.playerYPosition;
+							m_player.m_position.y = playerPacket.data.reset.playerYPosition;
 						m_flag.m_position.x = playerPacket.data.reset.flagXPosition;
 						m_flag.m_position.y = playerPacket.data.reset.flagYPosition;
+
+						m_player.m_playerColor.x = cbengine::rangeMapFloat( 0.0f, 255.0f, 0.0f, 1.0f, static_cast<float>( playerPacket.playerColorAndID[0] ) );
+						m_player.m_playerColor.y = cbengine::rangeMapFloat( 0.0f, 255.0f, 0.0f, 1.0f, static_cast<float>( playerPacket.playerColorAndID[1] ) );
+						m_player.m_playerColor.z = cbengine::rangeMapFloat( 0.0f, 255.0f, 0.0f, 1.0f, static_cast<float>( playerPacket.playerColorAndID[2] ) );
 
 						CS6Packet ackPacketForReset;
 						ackPacketForReset.packetNumber = playerPacket.packetNumber;
@@ -305,6 +387,20 @@ void FeedbackWorld::getUpdatedGameDataFromNetworkAgent() {
 						ackPacketForReset.data.acknowledged.packetType = TYPE_Reset;
 
 						nwAgent->sendAckPacket( ackPacketForReset );
+
+					} else if ( playerPacket.packetType == TYPE_JoinLobby ) {
+
+						for ( size_t i = 0; i < m_otherPlayers.size(); ++i ) {
+
+							GameObject* player = m_otherPlayers[i];
+							delete player;
+							player = nullptr;
+						}
+
+						m_otherPlayers.clear();
+						
+						m_gameState = GAME_STATE_IN_LOBBY;
+						return;
 					}
 
 				} // end packet is available
@@ -338,11 +434,135 @@ void FeedbackWorld::render( float deltaSeconds ) const {
 		}
 		// END TEST CODE
 
-		//m_flag.render( deltaSeconds );
+		m_flag.render( deltaSeconds );
+
+	} else if ( m_gameState == GAME_STATE_IN_LOBBY ) {
+
+		glUseProgram(0);
+		glMatrixMode( GL_MODELVIEW );
+		glLoadIdentity();
+		matrixStack->emptyCurrentMatrixStackAndPushIdentityMatrix();
+
+		matrixStack->createOrthoMatrixAndPushToStack( 0.0f, 
+			( feedback::SCREEN_WIDTH ), 
+			0.0f, 
+			( feedback::SCREEN_HEIGHT ),
+			0.0f,
+			1.0f );
+
+		const Matrix44<float> & topOfStack = matrixStack->getMatrixFromTopOfStack();
+		glLoadMatrixf( topOfStack.matrixData );
+
+		const std::string fontName = "MainFont";
+		const std::string fontXMLFilePath = "Fonts/MainFont_EN.FontDef.xml";
+		const std::string fontTextureFilePath = "Fonts/MainFont_EN_00.png";
+		const float debugTextSize = 25.0f;
+		const float dispositionIncrement = 30.0f;
+
+		const float textXStartPos = feedback::HALF_SCREEN_WIDTH * 0.08f;
+		const float textYStartPos = feedback::SCREEN_HEIGHT * 0.85f;
+
+		float currentTextXPos = textXStartPos;
+		float currentTextYPos = textYStartPos;
+
+		Console* sharedDeveloperConsole = Console::getSharedDeveloperConsole();
+		TextRenderer* sharedTextRenderer = TextRenderer::sharedTextRenderer();
+		FontManager* sharedFontManager = FontManager::sharedFontManager();
+
+		BitmapFont* textFont = sharedFontManager->loadBitmapFont( fontName, fontTextureFilePath, fontTextureFilePath ); // Will only load first time
+	
+		if ( textFont != nullptr ) {
+
+			const std::string InLobbyString = "Game Lobby List of Game Rooms: ";
+			cbengine::Vector2 positionForText( textXStartPos , textYStartPos );
+			sharedTextRenderer->drawDebugText( InLobbyString, *(textFont), debugTextSize, positionForText );
+
+			if ( m_numGamesFromLobby == 0 ) {
+
+				currentTextYPos -= dispositionIncrement;
+				std::string noGames = "There are currently no game rooms";
+				cbengine::Vector2 noGamePos( currentTextXPos, currentTextYPos );
+
+				sharedTextRenderer->drawDebugText( noGames, *(textFont), debugTextSize, noGamePos );
+			}
+	
+			for ( int i = 0; i < m_numGamesFromLobby; ++i ) {
+
+				int gameNumToDisplay = ( i + 1 );
+				currentTextYPos -= dispositionIncrement;
+
+				std::string gameNumToDisplayString = "GameNumber: ";
+				std::string gameNum = std::to_string( (long double) gameNumToDisplay );
+				gameNumToDisplayString += gameNum;
+
+				cbengine::Vector2 gameNumPos( textXStartPos, currentTextYPos );
+
+				sharedTextRenderer->drawDebugText( gameNumToDisplayString, *(textFont), debugTextSize, gameNumPos );
+			} 
+		}
+
+		matrixStack->emptyCurrentMatrixStackAndPushIdentityMatrix();
 	}
 	
 
 	matrixStack->emptyCurrentMatrixStackAndPushIdentityMatrix();
+}
+
+
+void FeedbackWorld::joinGame( unsigned int gameNumTojoin ) {
+
+	if ( m_gameState == GAME_STATE_IN_LOBBY ) {
+
+		if ( gameNumTojoin > m_numGamesFromLobby ) {
+
+			return;
+		}
+
+		cbengine::GameDirector* sharedGameDirector = cbengine::GameDirector::sharedDirector();
+
+		FeedbackGame* fbGame = dynamic_cast<FeedbackGame*>( sharedGameDirector->getCurrentWorld() );
+
+		if ( fbGame != nullptr ) {
+
+			NetworkAgent* nwAgent = fbGame->getCurrentNetworkAgent();
+			if ( nwAgent != nullptr ) {
+
+				CS6Packet joinPacket;
+				joinPacket.packetType = TYPE_JoinGame;
+				joinPacket.packetNumber = 0;
+				joinPacket.timestamp = cbutil::getCurrentTimeSeconds();
+
+				joinPacket.data.joinGame.gameNumToJoin = gameNumTojoin;
+
+				nwAgent->sendPacket( joinPacket );
+			}
+		}
+	}
+}
+
+
+void FeedbackWorld::createGame() {
+
+	if ( m_gameState == GAME_STATE_IN_LOBBY ) {
+
+		cbengine::GameDirector* sharedGameDirector = cbengine::GameDirector::sharedDirector();
+
+		FeedbackGame* fbGame = dynamic_cast<FeedbackGame*>( sharedGameDirector->getCurrentWorld() );
+
+		if ( fbGame != nullptr ) {
+
+			NetworkAgent* nwAgent = fbGame->getCurrentNetworkAgent();
+			if ( nwAgent != nullptr ) {
+
+				CS6Packet createPacket;
+				createPacket.packetType = TYPE_CreateGame;
+				createPacket.packetNumber = 0;
+				createPacket.timestamp = cbutil::getCurrentTimeSeconds();
+				
+				nwAgent->sendPacket( createPacket );
+			}
+		}
+	}
 }
 
 
@@ -382,6 +602,131 @@ void FeedbackWorld::processKeyboardInput( float deltaSeconds ) {
 		m_player.increaseOrientationDegrees( -3.50f );
 	}
 
+	static bool cKeyDown = false;
+	if ( virtualKeys[ 'C' ] ) {
+
+		if ( !cKeyDown ) {
+			
+			createGame();
+		}
+
+		cKeyDown = true;
+
+	} else {
+
+		cKeyDown = false;
+	}
+
+	static bool oneKeyDown = false;
+	if ( virtualKeys[ '1' ] ) {
+		if ( !oneKeyDown ) {
+
+			joinGame( 1 );
+		}
+
+		oneKeyDown = true;
+	} else {
+		oneKeyDown = false;
+	}
+
+	static bool twoKeyDown = false;
+	if ( virtualKeys[ '2' ] ) {
+		if ( !twoKeyDown ) {
+
+			joinGame( 2 );
+		}
+
+		twoKeyDown = true;
+	} else {
+		twoKeyDown = false;
+	}
+
+	static bool threeKeyDown = false;
+	if ( virtualKeys[ '3' ] ) {
+		if ( !oneKeyDown ) {
+
+			joinGame( 3 );
+		}
+
+		threeKeyDown = true;
+	} else {
+		threeKeyDown = false;
+	}
+
+
+	static bool fourKeyDown = false;
+	if ( virtualKeys[ '4' ] ) {
+		if ( !fourKeyDown ) {
+
+			joinGame( 4 );
+		}
+
+		fourKeyDown = true;
+	} else {
+		fourKeyDown = false;
+	}
+
+
+	static bool fiveKeyDown = false;
+	if ( virtualKeys[ '5' ] ) {
+		if ( !fiveKeyDown ) {
+
+			joinGame( 5 );
+		}
+
+		fiveKeyDown = true;
+	} else {
+		fiveKeyDown = false;
+	}
+
+	static bool sixKeyDown = false;
+	if ( virtualKeys[ '6' ] ) {
+		if ( !sixKeyDown ) {
+
+			joinGame( 6 );
+		}
+
+		sixKeyDown = true;
+	} else {
+		sixKeyDown = false;
+	}
+
+	static bool sevenKeyDown = false;
+	if ( virtualKeys[ '7' ] ) {
+		if ( !sevenKeyDown ) {
+
+			joinGame( 7 );
+		}
+
+		sevenKeyDown = true;
+	} else {
+		sevenKeyDown = false;
+	}
+
+	static bool eightKeyDown = false;
+	if ( virtualKeys[ '8' ] ) {
+		if ( !eightKeyDown ) {
+
+			joinGame( 8 );
+		}
+
+		eightKeyDown = true;
+	} else {
+		eightKeyDown = false;
+	}
+
+
+	static bool nineKeyDown = false;
+	if ( virtualKeys[ '9' ] ) {
+		if ( !nineKeyDown ) {
+
+			joinGame( 9 );
+		}
+
+		nineKeyDown = true;
+	} else {
+		nineKeyDown = false;
+	}
 }
 
 
@@ -390,4 +735,5 @@ void FeedbackWorld::setDefaultVariableValues() {
 	m_camera2D.m_position.x = 0.0f;
 	m_camera2D.m_position.y = 0.0f;
 	m_gameState = GAME_STATE_WAITING_FOR_SERVER;
+	m_numGamesFromLobby = 0;
 }

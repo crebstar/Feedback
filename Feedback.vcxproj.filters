@@ -34,6 +34,9 @@
     <ClInclude Include="GameCode\CS6Packet.hpp">
       <Filter>GameCode\Networking</Filter>
     </ClInclude>
+    <ClInclude Include="GameCode\NetworkManager.hpp">
+      <Filter>GameCode\Networking</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameCode\WinMain.cpp">
@@ -55,6 +58,9 @@
       <Filter>GameCode</Filter>
     </ClCompile>
     <ClCompile Include="GameCode\NetworkAgent.cpp">
+      <Filter>GameCode\Networking</Filter>
+    </ClCompile>
+    <ClCompile Include="GameCode\NetworkManager.cpp">
       <Filter>GameCode\Networking</Filter>
     </ClCompile>
   </ItemGroup>

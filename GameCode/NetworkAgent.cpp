@@ -144,10 +144,23 @@ void NetworkAgent::sendAckPacket( const CS6Packet& ackPacket ) {
 		if ( wsResult == SOCKET_ERROR ) {
 
 			printf( "sendto failed with error: %d\n", WSAGetLastError() );
-			//closesocket( connectSocket );
-			//WSACleanup();
 		}
 
+	} 
+}
+
+
+void NetworkAgent::sendPacket( const CS6Packet& packet ) {
+
+	if ( m_connectionIsActive ) {
+
+		int wsResult = 0;
+		wsResult = sendto( m_serverSocket, (char*) &packet, sizeof( CS6Packet ), 0, (sockaddr*) &m_serverAddress, m_serverAddressLength ); 
+
+		if ( wsResult == SOCKET_ERROR ) {
+
+			printf( "sendto failed with error: %d\n", WSAGetLastError() );
+		}
 	} 
 }
 
@@ -166,7 +179,7 @@ void NetworkAgent::sendPlayerVictoryPacket( const CS6Packet& victoryPacket ) {
 }
 
 
-bool NetworkAgent::requestToJoinServer( float deltaSeconds, CS6Packet& out_resetPacketReceived ) {
+bool NetworkAgent::requestToJoinServer( float deltaSeconds, CS6Packet& out_joinLobbyPacketReceived ) {
 
 	static float durationSincePacketSent = deltaSeconds;
 	static bool bPacketToJoinSent = false;
@@ -212,11 +225,11 @@ bool NetworkAgent::requestToJoinServer( float deltaSeconds, CS6Packet& out_reset
 		sockaddr_in serverAddress;
 		int sizeOfServeraddress = sizeof( serverAddress );
 
-		winSockResult = recvfrom( m_serverSocket, (char*) &out_resetPacketReceived, sizeof( CS6Packet ), 0, (sockaddr*) &serverAddress, &sizeOfServeraddress );
+		winSockResult = recvfrom( m_serverSocket, (char*) &out_joinLobbyPacketReceived, sizeof( CS6Packet ), 0, (sockaddr*) &serverAddress, &sizeOfServeraddress );
 
 		if ( winSockResult > 0 ) {
 
-			if ( out_resetPacketReceived.packetType == TYPE_Reset ) {
+			if ( out_joinLobbyPacketReceived.packetType == TYPE_JoinLobby ) {
 
 				CS6Packet ackPacket;
 				ackPacket.packetNumber = 0;
@@ -225,8 +238,8 @@ bool NetworkAgent::requestToJoinServer( float deltaSeconds, CS6Packet& out_reset
 				ackPacket.playerColorAndID[0] = 0;
 				ackPacket.playerColorAndID[1] = 0;
 				ackPacket.playerColorAndID[2] = 0;
-				ackPacket.data.acknowledged.packetType = TYPE_Reset;
-				ackPacket.data.acknowledged.packetNumber = out_resetPacketReceived.packetNumber;
+				ackPacket.data.acknowledged.packetType = TYPE_JoinLobby;
+				ackPacket.data.acknowledged.packetNumber = out_joinLobbyPacketReceived.packetNumber;
 
 				int wsResult = 0;
 				wsResult = sendto( m_serverSocket, (char*) &ackPacket, sizeof( CS6Packet ), 0, (sockaddr*) &m_serverAddress, m_serverAddressLength ); 
@@ -241,12 +254,39 @@ bool NetworkAgent::requestToJoinServer( float deltaSeconds, CS6Packet& out_reset
 				durationSincePacketSent = 0.0f;
 				bPacketToJoinSent = false;
 			}
-			// 129.119.247.169
 		}
 	}
 
 	return false;
 }
+
+
+void NetworkAgent::getLobbyPacketsInOrder( std::set<CS6Packet>& out_LobbyPackets, std::set<CS6Packet>& out_resetPackets ) {
+
+	if ( m_connectionIsActive ) {
+
+		int winSockResult = 1;
+		sockaddr_in serverAddress;
+		int sizeOfServeraddress = sizeof( serverAddress );
+
+		CS6Packet packetRec;
+
+		while ( winSockResult > 0 ) {
+
+			winSockResult = recvfrom( m_serverSocket, (char*) &packetRec, sizeof( CS6Packet ), 0, (sockaddr*) &serverAddress, &sizeOfServeraddress );
+
+			if ( packetRec.packetType == TYPE_GameList ) 
+			{
+				out_LobbyPackets.insert( packetRec );
+
+			} else if ( packetRec.packetType == TYPE_Reset ) {
+
+				out_resetPackets.insert( packetRec );
+			}
+		}
+	} 
+}
+
 
 
 bool NetworkAgent::getLatestGamePacketData( CS6Packet& out_playerPacketData ) {

@@ -3,6 +3,7 @@
 #pragma once
 
 #include <string>
+#include <set>
 
 #include "../../CBEngine/EngineCode/EngineMacros.hpp"
 
@@ -31,12 +32,14 @@ public:
 	void establishConnectionToServer();
 	void establishConnectionToNewServer( const std::string& serverIPAddress, const std::string& serverPortNumber );
 
-	bool requestToJoinServer( float deltaSeconds, CS6Packet& out_resetPacketReceived );
+	bool requestToJoinServer( float deltaSeconds, CS6Packet& out_joinLobbyPacketReceived );
 	void sendPlayerDataPacketToServer( const CS6Packet& playerPacket );
 	void sendPlayerVictoryPacket( const CS6Packet& victoryPacket );
 	void sendAckPacket( const CS6Packet& ackPacket );
+	void sendPacket( const CS6Packet& packet );
 
 	bool getLatestGamePacketData( CS6Packet& out_playerPacketData );
+	void getLobbyPacketsInOrder( std::set<CS6Packet>& out_LobbyPackets, std::set<CS6Packet>& out_resetPackets );
 
 protected:
 

@@ -24,6 +24,7 @@
     <ClInclude Include="GameCode\GameConstants.hpp" />
     <ClInclude Include="GameCode\GameObject.hpp" />
     <ClInclude Include="GameCode\NetworkAgent.hpp" />
+    <ClInclude Include="GameCode\NetworkManager.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameCode\Camera.cpp" />
@@ -32,6 +33,7 @@
     <ClCompile Include="GameCode\FeedbackWorld.cpp" />
     <ClCompile Include="GameCode\GameObject.cpp" />
     <ClCompile Include="GameCode\NetworkAgent.cpp" />
+    <ClCompile Include="GameCode\NetworkManager.cpp" />
     <ClCompile Include="GameCode\WinMain.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

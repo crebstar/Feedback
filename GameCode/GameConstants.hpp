@@ -14,8 +14,8 @@ namespace feedback {
 	const double NEAR_CLIPPING_PLANE				= 0.10;
 	const double FAR_CLIPPING_PLANE					= 1000.0;
 
-	const float HALF_SCREEN_WIDTH					= 900.0f;
-	const float HALF_SCREEN_HEIGHT					= 450.0f;
+	const float HALF_SCREEN_WIDTH					= 250.0f;
+	const float HALF_SCREEN_HEIGHT					= 250.0f;
 	const float PITCH_ORIENTATION_MAX				= 88.0f;
 	const float PITCH_ORIENTATION_MIN				= -88.0f;
 
